@@ -8,9 +8,9 @@ from argparse import ArgumentParser
 import pandas as pd
 from hypertune import HyperTune
 
-from metadata import COLUMNS, FEATURES, TARGET, TRAIN_FILE, TRAIN_TEST_SPLIT, MODEL_FILE_NAME, N_SPLITS, SILENT, OBJECTIVE, BOOSTER, RANDOM_STATE, SHUFFLE, N_JOBS
-import input
-from model import fit_predict, fit_predict_cv
+from xgb_trainer.metadata import COLUMNS, FEATURES, TARGET, TRAIN_FILE, TRAIN_TEST_SPLIT, MODEL_FILE_NAME, N_SPLITS, SILENT, OBJECTIVE, BOOSTER, RANDOM_STATE, SHUFFLE, N_JOBS
+from xgb_trainer.input import split_gcs_path, download_blob, upload_blob, process_features
+from xgb_trainer.model import fit_predict, fit_predict_cv
 
 import pickle
 
@@ -28,8 +28,8 @@ def main(args):
     print()
     print('Downloading train & test data...')
     TRAIN_PATH = '{}/{}'.format(args.data_dir, TRAIN_FILE)
-    BUCKET_NAME, TRAIN_BLOB = input.split_gcs_path(TRAIN_PATH)
-    input.download_blob(BUCKET_NAME, TRAIN_BLOB, TRAIN_FILE)
+    BUCKET_NAME, TRAIN_BLOB = split_gcs_path(TRAIN_PATH)
+    download_blob(BUCKET_NAME, TRAIN_BLOB, TRAIN_FILE)
 
     print()
     print('Loading data...')
@@ -38,6 +38,8 @@ def main(args):
 
     X = train_data.drop([TARGET], axis=1)
     y = train_data[TARGET]
+
+    X = process_features(X)
 
     print()
     print('Training model...')
@@ -69,8 +71,8 @@ def main(args):
         pickle.dump(model, f)
 
     DUMP_PATH = '{}/{}'.format(args.job_dir, model_fn)
-    BUCKET_NAME, DUMP_BLOB = input.split_gcs_path(DUMP_PATH)
-    input.upload_blob(BUCKET_NAME, DUMP_BLOB, model_fn)
+    BUCKET_NAME, DUMP_BLOB = split_gcs_path(DUMP_PATH)
+    upload_blob(BUCKET_NAME, DUMP_BLOB, model_fn)
 
 
 if __name__ == "__main__":

@@ -10,7 +10,7 @@ import xgboost as xgb
 from google.cloud import storage
 from sklearn.preprocessing import MinMaxScaler
 
-import metadata
+from xgb_trainer import metadata
 
 def split_gcs_path(gcs_path):
     '''
