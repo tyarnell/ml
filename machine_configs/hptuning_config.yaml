@@ -1,6 +1,6 @@
 trainingInput:
   scaleTier: CUSTOM
-  masterType: complex_model_l
+  masterType: n1-standard-16
   hyperparameters:
     goal: MAXIMIZE
     hyperparameterMetricTag: accuracy
