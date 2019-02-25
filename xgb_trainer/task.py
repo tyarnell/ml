@@ -17,15 +17,6 @@ import pickle
 
 def main(args):
 
-    HYPERPARAMS = vars(args)
-    HYPERPARAMS.pop('job_dir')
-    HYPERPARAMS.pop('data_dir')
-    HYPERPARAMS['silent'] = SILENT
-    HYPERPARAMS['objective'] = OBJECTIVE
-    HYPERPARAMS['booster'] = BOOSTER
-    HYPERPARAMS['n_jobs'] = N_JOBS
-
-    print()
     print('Downloading train & test data...')
     TRAIN_PATH = '{}/{}'.format(args.data_dir, TRAIN_FILE)
     BUCKET_NAME, TRAIN_BLOB = split_gcs_path(TRAIN_PATH)
@@ -40,6 +31,14 @@ def main(args):
     y = train_data[TARGET]
 
     X = process_features(X)
+
+    HYPERPARAMS = vars(args)
+    HYPERPARAMS.pop('job_dir')
+    HYPERPARAMS.pop('data_dir')
+    HYPERPARAMS['silent'] = SILENT
+    HYPERPARAMS['objective'] = OBJECTIVE
+    HYPERPARAMS['booster'] = BOOSTER
+    HYPERPARAMS['n_jobs'] = N_JOBS
 
     print()
     print('Training model...')
@@ -98,7 +97,6 @@ if __name__ == "__main__":
     parser.add_argument('--scale-pos-weight', default=1, type=float)
 
     args = parser.parse_args()
-
     main(args)
 
     print()
