@@ -15,11 +15,18 @@ from model import fit_predict, fit_predict_cv
 import pickle
 
 
-def main(HYPERPARAMS):
+def main(args):
+
+    HYPERPARAMS = vars(args)
+    HYPERPARAMS.pop('job_dir')
+    HYPERPARAMS.pop('data_dir')
+    HYPERPARAMS['silent'] = SILENT
+    HYPERPARAMS['objective'] = OBJECTIVE
+    HYPERPARAMS['booster'] = BOOSTER
 
     print()
     print('Downloading train & test data...')
-    TRAIN_PATH = '{}/{}'.format(HYPERPARAMS.data_dir, TRAIN_FILE)
+    TRAIN_PATH = '{}/{}'.format(args.data_dir, TRAIN_FILE)
     BUCKET_NAME, TRAIN_BLOB = input.split_gcs_path(TRAIN_PATH)
     input.download_blob(BUCKET_NAME, TRAIN_BLOB, TRAIN_FILE)
 
@@ -35,11 +42,12 @@ def main(HYPERPARAMS):
     print('Training model...')
     if N_SPLITS == 1:
         model, results = fit_predict(HYPERPARAMS, X, y, TRAIN_TEST_SPLIT, RANDOM_STATE)
+        score = results['accuracy_score']
     elif N_SPLITS > 1:
         model, k_results, mean_score = fit_predict_cv(HYPERPARAMS, X, y, N_SPLITS, SHUFFLE, RANDOM_STATE)
+        score = mean_score
     else:
         raise ValueError('N_SPLITS must be a positive integer. {} is not an acceptable value'.format(N_SPLITS))
-
 
     print()
     print('Reporting accuracy score...')
@@ -57,7 +65,7 @@ def main(HYPERPARAMS):
     # Export the model to a file
     model_fn = '{}_{}{}'.format(MODEL_FILE_NAME, time.time(), '.pkl')
     with open(model_fn, 'wb') as f:
-        pickle.dump(bst, f)
+        pickle.dump(model, f)
 
     DUMP_PATH = '{}/{}'.format(args.job_dir, model_fn)
     BUCKET_NAME, DUMP_BLOB = input.split_gcs_path(DUMP_PATH)
@@ -71,8 +79,8 @@ if __name__ == "__main__":
     print('Training started at {}'.format(start))
 
     parser = ArgumentParser()
-    # parser.add_argument('--data-dir', help='GCS or local paths to training data', required=True)
-    # parser.add_argument('--job-dir', help='GCS location to write checkpoints and export models', required=True)
+    parser.add_argument('--data-dir', help='GCS or local paths to training data', required=True)
+    parser.add_argument('--job-dir', help='GCS location to write checkpoints and export models', required=True)
     parser.add_argument('--max-depth', default=3, type=int)
     parser.add_argument('--learning-rate', default=0.1, type=float)
     parser.add_argument('--n-estimators', default=100, type=int)
@@ -87,15 +95,11 @@ if __name__ == "__main__":
     parser.add_argument('--scale-pos-weight', default=1, type=float)
     parser.add_argument('--n-jobs', default=-1, type=int)
 
-    HYPERPARAMS = vars(parser.parse_args())
-
-    HYPERPARAMS['silent'] = SILENT
-    HYPERPARAMS['objective'] = OBJECTIVE
-    HYPERPARAMS['booster'] = BOOSTER
+    args = parser.parse_args()
 
     exit()
 
-    main(HYPERPARAMS)
+    main(args)
 
     print()
     print('Training completed in {}'.format((datetime.now() - start)))
