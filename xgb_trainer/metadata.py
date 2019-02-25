@@ -6,6 +6,7 @@ MODEL_FILE_NAME='melanoma_analysis'
 SILENT = True
 OBJECTIVE = 'binary:logistic' # 
 BOOSTER = 'gbtree' # Can be gbtree | gblinear | dart
+N_JOBS = -1
 
 # Choose splitting settings
 N_SPLITS = 10

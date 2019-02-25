@@ -1,10 +1,6 @@
 trainingInput:
   scaleTier: CUSTOM
-  masterType: n1-highmem-96
-  workerType: n1-highmem-96
-  parameterServerType: n1-highmem-96
-  workerCount: 1
-  parameterServerCount: 1
+  masterType: large-model
   hyperparameters:
     goal: MAXIMIZE
     hyperparameterMetricTag: accuracy
@@ -12,67 +8,64 @@ trainingInput:
     maxParallelTrials: 1
     enableTrialEarlyStopping: TRUE
     params:
-      - parameterName: early-stopping-rounds
-        type: DISCRETE
-        discreteValues:
-          - 50
-      - parameterName: num-boost-rounds
-        type: DISCRETE
-        discreteValues:
-          - 250
-      - parameterName: eta
-        type: DOUBLE
-        minValue: 0.0001
-        maxValue: 0.5
-        scaleType: UNIT_LOG_SCALE
-      - parameterName: gamma
-        type: DOUBLE
-        minValue: 0
-        maxValue: 0.5
-        scaleType: UNIT_LINEAR_SCALE
       - parameterName: max-depth
         type: INTEGER
         minValue: 3
         maxValue: 10
+        scaleType: UNIT_LINEAR_SCALE
+      - parameterName: learning-rate
+        type: DOUBLE
+        minValue: 0.0001
+        maxValue: 0.5
+        scaleType: UNIT_LOG_SCALE
+      - parameterName: n-estimators
+        type: INTEGER
+        minValue: 1
+        maxValue: 500
+        scaleType: UNIT_LINEAR_SCALE
+      - parameterName: gamma
+        type: DOUBLE
+        minValue: 0
+        maxValue: 0.5
         scaleType: UNIT_LINEAR_SCALE
       - parameterName: min-child-weight
         type: INTEGER
         minValue: 1
         maxValue: 6
         scaleType: UNIT_LINEAR_SCALE
+      - parameterName: max-delta-step
+        type: INTEGER
+        minValue: 0
+        maxValue: 10
+        scaleType: UNIT_LINEAR_SCALE
       - parameterName: subsample
         type: DOUBLE
         minValue: 0.5
-        maxValue: 0.8
+        maxValue: 1
         scaleType: UNIT_LINEAR_SCALE
       - parameterName: colsample-bytree
         type: DOUBLE
         minValue: 0.5
-        maxValue: 0.8
+        maxValue: 1
         scaleType: UNIT_LINEAR_SCALE
       - parameterName: colsample-bylevel
         type: DOUBLE
         minValue: 0.5
-        maxValue: 0.8
+        maxValue: 1
         scaleType: UNIT_LINEAR_SCALE
-      - parameterName: colsample-bynode
-        type: DOUBLE
-        minValue: 0.5
-        maxValue: 0.8
-        scaleType: UNIT_LINEAR_SCALE
-      - parameterName: lmbda
+      - parameterName: reg-alpha
         type: DOUBLE
         minValue: 0.00001
         maxValue: 100
         scaleType: UNIT_LOG_SCALE
-      - parameterName: alpha
+      - parameterName: reg-lambda
         type: DOUBLE
         minValue: 0.00001
         maxValue: 100
         scaleType: UNIT_LOG_SCALE
-      - parameterName: sketch-eps
+      - parameterName: scale-pos-weight
         type: DOUBLE
-        minValue: 0.001
+        minValue: 0.01
         maxValue: 1
         scaleType: UNIT_LINEAR_SCALE
           

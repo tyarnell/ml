@@ -8,7 +8,7 @@ from argparse import ArgumentParser
 import pandas as pd
 from hypertune import HyperTune
 
-from metadata import COLUMNS, FEATURES, TARGET, TRAIN_FILE, TRAIN_TEST_SPLIT, MODEL_FILE_NAME, N_SPLITS, SILENT, OBJECTIVE, BOOSTER, RANDOM_STATE, SHUFFLE
+from metadata import COLUMNS, FEATURES, TARGET, TRAIN_FILE, TRAIN_TEST_SPLIT, MODEL_FILE_NAME, N_SPLITS, SILENT, OBJECTIVE, BOOSTER, RANDOM_STATE, SHUFFLE, N_JOBS
 import input
 from model import fit_predict, fit_predict_cv
 
@@ -23,6 +23,7 @@ def main(args):
     HYPERPARAMS['silent'] = SILENT
     HYPERPARAMS['objective'] = OBJECTIVE
     HYPERPARAMS['booster'] = BOOSTER
+    HYPERPARAMS['n_jobs'] = N_JOBS
 
     print()
     print('Downloading train & test data...')
@@ -44,7 +45,7 @@ def main(args):
         model, results = fit_predict(HYPERPARAMS, X, y, TRAIN_TEST_SPLIT, RANDOM_STATE)
         score = results['accuracy_score']
     elif N_SPLITS > 1:
-        model, k_results, mean_score = fit_predict_cv(HYPERPARAMS, X, y, N_SPLITS, SHUFFLE, RANDOM_STATE)
+        model, _, mean_score = fit_predict_cv(HYPERPARAMS, X, y, N_SPLITS, SHUFFLE, RANDOM_STATE)
         score = mean_score
     else:
         raise ValueError('N_SPLITS must be a positive integer. {} is not an acceptable value'.format(N_SPLITS))
@@ -93,7 +94,6 @@ if __name__ == "__main__":
     parser.add_argument('--reg-alpha', default=0, type=float)
     parser.add_argument('--reg-lambda', default=1, type=float)
     parser.add_argument('--scale-pos-weight', default=1, type=float)
-    parser.add_argument('--n-jobs', default=-1, type=int)
 
     args = parser.parse_args()
 
