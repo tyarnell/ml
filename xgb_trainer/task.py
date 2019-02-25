@@ -36,9 +36,10 @@ def main(HYPERPARAMS):
     if N_SPLITS == 1:
         model, results = fit_predict(HYPERPARAMS, X, y, TRAIN_TEST_SPLIT, RANDOM_STATE)
     elif N_SPLITS > 1:
-        model, k_results = fit_predict_cv(HYPERPARAMS, X, y, N_SPLITS, SHUFFLE, RANDOM_STATE)
+        model, k_results, mean_score = fit_predict_cv(HYPERPARAMS, X, y, N_SPLITS, SHUFFLE, RANDOM_STATE)
     else:
         raise ValueError('N_SPLITS must be a positive integer. {} is not an acceptable value'.format(N_SPLITS))
+
 
     print()
     print('Reporting accuracy score...')

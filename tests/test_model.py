@@ -30,7 +30,7 @@ class TestModelMethods(unittest.TestCase):
         d2_keys = vars(model).keys()
 
         self.assertEqual(d1_keys, d2_keys)
-        self.assertEqual(score, results['Accuracy Score'])
+        self.assertEqual(score, results['accuracy_score'])
 
     def test_fit_predict_cv(self):
         # training inputs
@@ -50,12 +50,11 @@ class TestModelMethods(unittest.TestCase):
             test_score.append(accuracy_score(y[test], preds))
         test_model = XGBClassifier(**hyperparams).fit(X, y)
         test_score = sum(test_score)/len(test_score)
-
         # Build test model and score
-        model, k_score, mean_score = fit_predict_cv(hyperparams, X, y, n_splits=n_splits, shuffle=shuffle)
+        modelcv, k_score, mean_score = fit_predict_cv(hyperparams, X, y, n_splits=n_splits, shuffle=shuffle)
 
         d1_keys = vars(test_model).keys()
-        d2_keys = vars(model).keys()
+        d2_keys = vars(modelcv).keys()
 
         self.assertEqual(d1_keys, d2_keys)
         self.assertEqual(test_score, mean_score)

@@ -27,14 +27,14 @@ def fit_predict_cv(booster_params, X, y, n_splits=3, shuffle=False, random_state
         i = 0
         k_scores = {}
         mean_score = []
-        classifier = XGBClassifier(booster_params)
+        classifier = XGBClassifier(**booster_params)
         cv = StratifiedKFold(n_splits=n_splits, shuffle=shuffle, random_state=random_state)
         for train, test in cv.split(X, y):
             preds = classifier.fit(X[train], y[train]).predict(X[test])
             k_scores[i] = evaluate_model(y[test], preds, print_score=print_score)
-            mean_score = mean_score.append(accuracy_score(y[test], preds))
+            mean_score.append(accuracy_score(y[test], preds))
             i += 1
-        classifier.fit(X)
+        classifier.fit(X, y)
         mean_score = sum(mean_score)/len(mean_score)
         return classifier, k_scores, mean_score
     except Exception as e:
@@ -45,9 +45,9 @@ def evaluate_model(y_true, y_predict, print_score=False):
     '''Evaluate a models predictions, returning a dictionary of the necessary results.'''
     try:
         results = {}
-        results['Confusion Matrix'] = confusion_matrix(y_true, y_predict)
-        results['Classification Report'] = classification_report(y_true, y_predict)        
-        results['Accuracy Score'] = accuracy_score(y_true, y_predict) * 100
+        results['confusion_matrix'] = confusion_matrix(y_true, y_predict)
+        results['classification_report'] = classification_report(y_true, y_predict)        
+        results['accuracy_score'] = accuracy_score(y_true, y_predict) * 100
         if print_score:
             print()
             print("CONFUSION MATRIX:")
