@@ -13,6 +13,7 @@ JOB_DIR=gs://train-jobs/melanoma/job
 CONFIG=/Users/Tyler/projects/ml/machine_configs/hptuning_config.yaml
 REGION=us-west1
 RUNTIME_VERSION=1.12
+PYTHON_VERSION=3.5
 DATA_DIR=gs://${BUCKET}/melanoma/data
 
 gcloud ml-engine jobs submit training $JOB_NAME \
@@ -22,5 +23,6 @@ gcloud ml-engine jobs submit training $JOB_NAME \
  --config $CONFIG \
  --region $REGION \
  --runtime-version $RUNTIME_VERSION \
+ --python-version $PYTHON_VERSION \
  -- \
  --data-dir $DATA_DIR
