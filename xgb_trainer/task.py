@@ -32,13 +32,24 @@ def main(args):
 
     X = process_features(X)
 
-    HYPERPARAMS = vars(args)
-    HYPERPARAMS.pop('job_dir')
-    HYPERPARAMS.pop('data_dir')
-    HYPERPARAMS['silent'] = SILENT
-    HYPERPARAMS['objective'] = OBJECTIVE
-    HYPERPARAMS['booster'] = BOOSTER
-    HYPERPARAMS['n_jobs'] = N_JOBS
+    HYPERPARAMS = {
+        'silent': SILENT,
+        'objective': OBJECTIVE,
+        'booster': BOOSTER,
+        'n_jobs': N_JOBS,
+        'max_depth': args.max_depth,
+        'learning_rate': args.learning_rate,
+        'n_estimators': args.n_estimators,
+        'gamma': args.gamma,
+        'min_child_weight': args.min_child_weight,
+        'max_delta_step': args.max_delta_step,
+        'subsample': args.subsample,
+        'colsample_bytree': args.colsample_bytree,
+        'colsample_bylevel': args.colsample_bylevel,
+        'reg_alpha': args.reg_alpha,
+        'reg_lambda': args.reg_lambda,
+        'scale_pos_weight': args.scale_pos_weight
+    }
 
     print()
     print('Training model...')
@@ -64,7 +75,6 @@ def main(args):
 
     print()
     print('Saving and exporting model to GCS location...')
-    # Export the model to a file
     model_fn = '{}_{}{}'.format(MODEL_FILE_NAME, time.time(), '.pkl')
     with open(model_fn, 'wb') as f:
         pickle.dump(model, f)

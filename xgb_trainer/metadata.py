@@ -1,9 +1,9 @@
 # Data structure of the training file
 TRAIN_FILE='data_melanoma_image_train_150x150_train_2.h5'
-MODEL_FILE_NAME='melanoma_analysis'
+MODEL_FILE_NAME='isicTrainer'
 
 # Specify the learning task, booster type, and verbosity
-SILENT = True
+SILENT = False
 OBJECTIVE = 'binary:logistic' # 
 BOOSTER = 'gbtree' # Can be gbtree | gblinear | dart
 N_JOBS = -1
