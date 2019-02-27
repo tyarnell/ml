@@ -1,0 +1,8 @@
+trainingInput:
+  scaleTier: CUSTOM
+  masterType: n1-standard-16
+  hyperparameters:
+    maxTrials: 30
+    maxParallelTrials: 3
+    resumePreviousJobId: tune_isicTrainer_20190225_143405
+    enableTrialEarlyStopping: TRUE
