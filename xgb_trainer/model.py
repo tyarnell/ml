@@ -5,7 +5,7 @@ import numpy as np
 from scipy import interp
 
 from xgboost import XGBClassifier
-from sklearn.model_selection import StratifiedKFold, train_test_split
+from sklearn.model_selection import StratifiedKFold, train_test_split, cross_val_score, cross_validate
 from sklearn.metrics import roc_auc_score, accuracy_score, confusion_matrix, classification_report
 
 
@@ -40,6 +40,16 @@ def fit_predict_cv(booster_params, X, y, n_splits=3, shuffle=False, random_state
     except Exception as e:
         raise e
 
+
+def cv_fit(booster_params, X, y, n_splits=3, scoring='accuracy'):
+    '''Build an XGBoost classifier using the sklearn API, along w/stratified Kfold CV.'''
+    try:
+        classifier = XGBClassifier(**booster_params)
+        cv_results = cross_validate(classifier, X, y, cv=n_splits, scoring=scoring)
+        classifier.fit(X, y)
+        return classifier, cv_results['test_score'].mean()
+    except Exception as e:
+        raise e
 
 def evaluate_model(y_true, y_predict, print_score=False):
     '''Evaluate a models predictions, returning a dictionary of the necessary results.'''
