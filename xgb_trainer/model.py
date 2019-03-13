@@ -31,7 +31,6 @@ def fit_predict_cv(booster_params, X, y, n_splits=3, early_stopping_rounds=100, 
         cv = StratifiedKFold(n_splits=n_splits, shuffle=shuffle, random_state=random_state)
         for train_index, test_index in cv.split(X, y):
             eval_set = [(X[test_index], y[test_index])]
-            print(eval_set)
             preds = classifier.fit(X[train_index], y[train_index], eval_set=eval_set, early_stopping_rounds=early_stopping_rounds).predict(X[test_index])
             k_scores[i] = evaluate_model(y[test_index], preds, print_score=print_score)
             mean_score.append(accuracy_score(y[test_index], preds))
