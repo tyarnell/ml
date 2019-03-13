@@ -7,11 +7,12 @@ SILENT = False
 OBJECTIVE = 'binary:logistic' # 
 BOOSTER = 'gbtree' # Can be gbtree | gblinear | dart
 N_JOBS = -1
+EARLY_STOPPING_ROUNDS = 100
 
 # Choose splitting settings
 N_SPLITS = 10
 TRAIN_TEST_SPLIT = 0.2
-SCORING = 'roc_auc'
+SCORING = 'accuracy'
 RANDOM_STATE = None
 SHUFFLE = False
 

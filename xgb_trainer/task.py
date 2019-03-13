@@ -8,7 +8,7 @@ from argparse import ArgumentParser
 import pandas as pd
 from hypertune import HyperTune
 
-from xgb_trainer.metadata import COLUMNS, FEATURES, TARGET, TRAIN_FILE, TRAIN_TEST_SPLIT, MODEL_FILE_NAME, N_SPLITS, SILENT, OBJECTIVE, BOOSTER, RANDOM_STATE, SHUFFLE, N_JOBS, SCORING
+from xgb_trainer.metadata import COLUMNS, FEATURES, TARGET, TRAIN_FILE, TRAIN_TEST_SPLIT, MODEL_FILE_NAME, N_SPLITS, SILENT, OBJECTIVE, BOOSTER, RANDOM_STATE, SHUFFLE, N_JOBS, SCORING, EARLY_STOPPING_ROUNDS
 from xgb_trainer.input import split_gcs_path, download_blob, upload_blob, process_features
 from xgb_trainer.model import fit_predict, fit_predict_cv, cv_fit
 
@@ -28,7 +28,7 @@ def main(args):
         train_data = pd.read_hdf(os.path.join('.', TRAIN_FILE))
 
     X = train_data.drop([TARGET], axis=1)
-    y = train_data[TARGET]
+    y = train_data[[TARGET]]
 
     X = process_features(X)
 
@@ -57,8 +57,9 @@ def main(args):
         model, results = fit_predict(HYPERPARAMS, X, y, TRAIN_TEST_SPLIT, RANDOM_STATE)
         score = results['accuracy_score']
     elif N_SPLITS > 1:
-        model, mean_score = cv_fit(HYPERPARAMS, X, y, N_SPLITS, scoring=SCORING)
-        score = mean_score
+        model, _, score = fit_predict_cv(HYPERPARAMS, X, y, early_stopping_rounds=EARLY_STOPPING_ROUNDS, n_splits=N_SPLITS, shuffle=SHUFFLE, random_state=RANDOM_STATE)
+        #model, mean_score = cv_fit(HYPERPARAMS, X, y, N_SPLITS, scoring=SCORING)
+        #score = mean_score
     else:
         raise ValueError('N_SPLITS must be a positive integer. {} is not an acceptable value'.format(N_SPLITS))
 
@@ -66,7 +67,7 @@ def main(args):
     print('Reporting accuracy score...')
     hpt = HyperTune()
     hpt.report_hyperparameter_tuning_metric(
-        hyperparameter_metric_tag=SCORING,
+        hyperparameter_metric_tag='accuracy',
         metric_value=score,
         global_step=1000)
 
