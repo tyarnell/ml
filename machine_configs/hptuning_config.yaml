@@ -21,7 +21,7 @@ trainingInput:
       - parameterName: n-estimators
         type: INTEGER
         minValue: 1
-        maxValue: 500
+        maxValue: 1000
         scaleType: UNIT_LINEAR_SCALE
       - parameterName: gamma
         type: DOUBLE
