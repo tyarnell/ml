@@ -44,17 +44,23 @@ class TestModelMethods(unittest.TestCase):
         
         test_score = []
         cv = StratifiedKFold(n_splits=n_splits, shuffle=shuffle, random_state=random_state)
-        test_model = XGBClassifier(**hyperparams)
-        for train, test in cv.split(X, y):
-            preds = test_model.fit(X[train], y[train]).predict(X[test])
-            test_score.append(accuracy_score(y[test], preds))
+        test_model = XGBClassifier()
+        for train_index, test_index in cv.split(X, y):
+            eval_set = [(X[test_index], y[test_index])]
+            preds = test_model.fit(X[train_index], y[train_index], eval_set=eval_set, early_stopping_rounds=100).predict(X[test_index])
+            test_score.append(accuracy_score(y[test_index], preds))
         test_model = XGBClassifier(**hyperparams).fit(X, y)
         test_score = sum(test_score)/len(test_score)
         # Build test model and score
-        modelcv, k_score, mean_score = fit_predict_cv(hyperparams, X, y, n_splits=n_splits, shuffle=shuffle)
+        modelcv, k_score, mean_score = fit_predict_cv(hyperparams, X, y, early_stopping_rounds=100,n_splits=n_splits, shuffle=shuffle)
 
         d1_keys = vars(test_model).keys()
         d2_keys = vars(modelcv).keys()
+
+        print(d1_keys)
+        print(d2_keys)
+
+        exit()
 
         self.assertEqual(d1_keys, d2_keys)
         self.assertEqual(test_score, mean_score)
