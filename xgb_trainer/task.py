@@ -28,7 +28,7 @@ def main(args):
         train_data = pd.read_hdf(os.path.join('.', TRAIN_FILE))
 
     X = train_data.drop([TARGET], axis=1)
-    y = train_data[[TARGET]]
+    y = train_data[TARGET]
 
     X = process_features(X)
 
