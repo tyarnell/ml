@@ -82,5 +82,5 @@ def process_features(features):
     # Implement min/max scaling
     scaler = MinMaxScaler()
     scaler.fit(features)
-    engineered_features = scaler.transform(features)
+    engineered_features = pd.DataFrame(scaler.transform(features))
     return engineered_features
