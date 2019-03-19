@@ -10,7 +10,7 @@ N_JOBS = -1
 EARLY_STOPPING_ROUNDS = 100
 
 # Choose splitting settings
-N_SPLITS = 10
+N_SPLITS = 20
 TRAIN_TEST_SPLIT = 0.2
 SCORING = 'accuracy'
 RANDOM_STATE = None
